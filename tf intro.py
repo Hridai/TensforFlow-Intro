@@ -5,7 +5,9 @@
      step per mini-batch) gradually improving model params)
 '''
 
-''' Trivial tf use '''
+''' Trivial tf use
+    Creating and setting up graphs
+'''
 
 import tensorflow as tf
 x = tf.Variable(3, name='x')
@@ -32,5 +34,27 @@ result = f.eval()
 print(result)
 
 
+x1 = tf.Variable(1)
+x1.graph is tf.get_default_graph()
 
+## or
+graph = tf.Graph()
+with graph.as_default():
+    x2 = tf.Variable(2)
+    x2.graph is graph
+x2.graph is tf.get_default_graph() ## shows that the graph is not default if in "when" block
+tf.reset_default_graph()
 
+## or
+w = tf.constant(3)
+x = w + 2
+y = x + 5
+z = x * 3
+
+with tf.Session() as sess:
+    print(y.eval())
+    print(z.eval())
+# worth noting, when calculating z, even though y is a dependent, it recalculates it from scratch
+# the y value previously calculated does not live in memory. multiple sessions do not share the
+# the same state. Variable states are stored on the servers, not in sessions.
+    
